@@ -1,0 +1,65 @@
+{
+  "name": "mint-nft",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cross-env NODE_ENV=dev node src/bin/www.js",
+    "estart": "cross-env NODE_ENV=externaldev nodemon -e js,ejs src/bin/www.js",
+    "pstart": "cross-env NODE_ENV=production nodemon -e js,ejs src/bin/www.js",
+    "api-docs": "swagger-cli bundle ./src/apidoc/openapi.yaml --outfile build/swagger.yaml --type yaml"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**"
+    ]
+  },
+  "dependencies": {
+    "@alch/alchemy-web3": "^1.4.6",
+    "@ethereumjs/tx": "^4.0.0",
+    "@openzeppelin/cli": "^2.8.2",
+    "@openzeppelin/contracts": "^4.7.3",
+    "@truffle/hdwallet-provider": "^2.0.14",
+    "amqplib": "^0.10.3",
+    "cookie-parser": "~1.4.4",
+    "d3-mitch-tree": "^1.1.2",
+    "dayjs": "^1.11.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.2",
+    "ejs": "^3.1.8",
+    "eslint-plugin-import": "^2.25.2",
+    "ethereumjs-common": "^1.5.2",
+    "ethereumjs-tx": "^2.1.2",
+    "ethereumjs-wallet": "^1.0.2",
+    "express": "~4.16.1",
+    "foundation-sites": "^6.7.5",
+    "http-errors": "~1.6.3",
+    "jquery": "^3.6.1",
+    "jquery.fancytree": "^2.38.2",
+    "morgan": "~1.9.1",
+    "mustache": "^4.2.0",
+    "mysql2": "^2.3.3",
+    "pug": "^3.0.2",
+    "sequelize": "^6.23.2",
+    "swagger-cli": "^4.0.4",
+    "swagger-ui-express": "^4.5.0",
+    "truffle-wallet-provider": "0.0.5",
+    "typedi": "^0.10.0",
+    "vis-network": "^9.1.2",
+    "web3": "^1.8.0",
+    "web3-eth-contract": "^1.8.0",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@openzeppelin/truffle-upgrades": "^1.16.0",
+    "cross-env": "^7.0.3",
+    "eslint": "8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.20"
+  }
+}

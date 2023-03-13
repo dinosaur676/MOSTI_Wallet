@@ -1,0 +1,11 @@
+### meta-data
+GET http://{{host}}:{{port}}{{base-path}}/nfts/1/meta-data
+Content-Type: application/json
+
+###
+POST http://localhost:80/api/item
+Content-Type: application/x-www-form-urlencoded
+
+id=99&content=new-element
+
+###

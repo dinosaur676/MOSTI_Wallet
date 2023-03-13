@@ -1,0 +1,41 @@
+{
+  "dev": {
+    "username": "emblock",
+    "password": "Dpaqmffjr01!",
+    "database": "local_dg_nft",
+    "host": "221.147.34.162",
+    "port": "9306",
+    "dialect": "mysql",
+    "timezone":"Asia/Seoul",
+    "pool": {
+      "max": 10,
+      "min": 5
+    }
+  },
+  "externaldev": {
+    "username": "emblock",
+    "password": "Dpaqmffjr01!",
+    "database": "local_dg_nft",
+    "host": "221.147.34.162",
+    "port": "9306",
+    "dialect": "mysql",
+    "timezone":"Asia/Seoul",
+    "pool": {
+      "max": 10,
+      "min": 5
+    }
+  },
+  "production": {
+    "username": "emblock",
+    "password": "Dpaqmffjr01!",
+    "database": "local_dg_nft",
+    "host": "221.147.34.162",
+    "port": "9306",
+    "dialect": "mysql",
+    "timezone":"Asia/Seoul",
+    "pool": {
+      "max": 10,
+      "min": 5
+    }
+  }
+}

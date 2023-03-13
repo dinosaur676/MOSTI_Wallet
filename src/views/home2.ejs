@@ -1,0 +1,108 @@
+<html lang="ko">
+    <head>
+        <meta charset="utf-8"/>
+        <title><%=data.title %></title>
+        <script src="/assets/jquery/dist/jquery.min.js"></script>
+        <script src="/assets/vis-network/standalone/umd/vis-network.min.js"></script>
+        <script src="/assets/foundation-sites/dist/js/foundation.min.js"></script>  <!-- Required -->
+        <link rel="stylesheet" href="/assets/foundation-sites/dist/css/foundation.min.css">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-x margin-top-3">
+                <div class="cell">
+                    <h3 class=""><%=data.title %></h3>
+                </div>
+            </div>
+            <div class="grid-x callout align-middle grid-margin-x">
+                <div class="cell medium-4 large-4">
+                    <div style="height:100%" >
+                        <img src="https://mimg.segye.com/content/image/2020/06/16/20200616522238.jpg" >
+                    </div>
+                </div>
+                <div class="cell medium-8 large-8">
+                    <div class="grid-y">
+                        <div class="cell callout">
+                            <h5>창작물 등록 정보</h5>
+                            <ul class="no-bullet">
+                                <li>창작물명 : <%=data.metaData.name %></li>
+                                <li>이미지 URL : http://www.vizinf.com/wp-content/uploads/2022/06/VIZinf_logo.png</li>
+                            </ul>
+                        </div>
+                        <div class="cell callout">
+                            <h5>NFT 발급 정보</h5>
+                            <ul class="no-bullet">
+                                <li>blockHash : <%=data.metaData.name %></li>
+                                <li>tokenId : 2</li>
+                                <li></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="mynetwork" class="grid-x callout align-middle grid-margin-x" style="height: 600px;"></div>
+        </div>
+        <script>
+          var nodes = new vis.DataSet([
+            { id: 1, label: "NFT1" },
+            { id: 2, label: "NFT2" },
+            { id: 3, label: "NFT3" },
+            { id: 4, label: "NFT4" },
+            { id: 5, label: "NFT5" },
+            { id: 6, label: "NFT6" },
+            { id: 7, label: "NFT7", heightConstraint: { minimum: 100, valign: "top" },
+              label: "NFT7 Minimum height\nvertical alignment\nmay be middle\n(default)", },
+            { id: 8,  heightConstraint: { minimum: 100, valign: "middle" },
+              label: "NFT8 Minimum height\nvertical alignment\nmay be bottom", },
+          ]);
+
+          // create an array with edges
+          var edges = new vis.DataSet([
+            { from: 1, to: 8, arrows: "to", dashes: true },
+            { from: 1, to: 3, arrows: "to" },
+            { from: 1, to: 2, arrows: "to" },
+            { from: 2, to: 4, arrows: "to" },
+            { from: 2, to: 5, arrows: "to" },
+            { from: 5, to: 6, arrows: { to: { scaleFactor: 2 } } },
+            {
+              from: 6,
+              to: 7,
+              arrows: { from: true },
+            },
+          ]);
+
+          // create a network
+          var container = document.getElementById("mynetwork");
+          var data = {
+            nodes: nodes,
+            edges: edges,
+          };
+          var options = {
+            layout: {
+              hierarchical: {
+                sortMethod: "directed",
+                shakeTowards: "leaves",
+              },
+            },
+            edges: {
+              smooth: true,
+              font: {
+                size: 12,
+              },
+            },
+            nodes: {
+              shape: "box",
+              font: {
+                bold: {
+                  color: "#0077aa",
+                },
+              },
+            },
+            physics: {
+              enabled: true,
+            },};
+          var network = new vis.Network(container, data, options);
+        </script>
+    </body>
+</html>

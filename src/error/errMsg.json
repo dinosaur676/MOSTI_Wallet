@@ -1,0 +1,10 @@
+{
+  "9001": "required %s",
+  "9002": "internal server error",
+  "9997": "tokenId is not valid",
+  "9998": "check validate address",
+  "9011": "use right nft mint error",
+  "9012": "point token transfer error",
+  "9013": "check nft tokenId error",
+  "9999": "internal server error"
+}

@@ -1,0 +1,777 @@
+openapi: 3.0.3
+info:
+  title: DG MINT NFT
+  description: Title
+  version: 0.2.1
+servers:
+  - url: 'http://140.238.5.158:3000/api/v1'
+  - url: 'http://localhost:3000/api/v1'
+tags:
+  - name: accounts
+    description: 블록체인 계정 생성
+  - name: nfts
+    description: 사용권과 소유권을 NFT발급을 통하여 저장 및 정보 조회
+#  - name: tokens
+#    description: 결제 포인트
+#  - name: order
+#    description: 주문
+#  - name: purchase
+#    description: 구매 이력
+paths:
+  /accounts:
+    post:
+      tags:
+        - accounts
+      summary: 계정생성
+      description: 계정생성 후 해당계정의 공개키와 비밀키를 리턴한다.
+      operationId: createAccount
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsResponse'
+  /nfts/mint-nft:
+    post:
+      tags:
+        - nfts
+      summary: NFT 민팅
+      description: 원본 NFT 의 판매등록 또는 사본 NFT의 구매 시  호출하여 NFT를 민팅한다.
+      operationId: mintNFT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                address:
+                  type: string
+                  example: '0x9C1f5fBC4EBAB00fF8B18d5651317F1e739ae1ee'
+                  description: '민팅 할 유저의 address'
+                metaData:
+                  $ref: '#/components/schemas/NFTMetaData'
+                  description: '저장할 메타 데이터 정보 json 형태면 어떤 정보도 가능'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  data:
+                    txId: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+                    tokenId: 1
+                  message: 민팅이 완료되었습니다.
+                  statusCode: 0000
+  /nfts/{tokenId}/meta-data:
+    get:
+      tags:
+        - nfts
+      summary: 토큰아이디로 메타데이터 조회
+      description: NFT 토큰아이디로 메타데이터를 조회한다.
+      operationId: findNftMetaDataByTokenId
+      parameters:
+        - name: tokenId
+          in: path
+          description: 조회하고자 하는 token Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NFTMetaDataResponse'
+  /nfts/txId/{txId}:
+    get:
+      tags:
+        - nfts
+      summary: transactionhash로 정보 조회
+      description: transactionhash로로 해당 트랜잭션의 정보를 조회한다.
+      operationId: findTransferInfoByTxId
+      parameters:
+        - name: txId
+          in: path
+          description: 조회하고자 하는 transactionhash
+          required: true
+          schema:
+            type: string
+            example: '0x40e2374e7fe2ebe31b5cd6d3a35d844647fa32ae6ba86b1fbf6060be707d2f70'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxIdResponse'
+  /nfts/{tokenId}/history:
+    get:
+      tags:
+        - nfts
+      summary: 토큰아이디로 소유자 히스토리 조회
+      description: 토큰 아이디로 창작물의 소유자 히스토리를 조회한다.
+      operationId: findOwnersOfNftByTokenId
+      parameters:
+        - name: tokenId
+          in: path
+          description: 조회하고자 하는 token Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnersOfDataResponse'
+  /nfts/transfer:
+    post:
+      tags:
+        - nfts
+      summary: 구매로 인한 원본 NFT의 소유자 변경 시행.
+      description: 원본 NFT를 구매로 인하여 최초는 창작자 또는 소유자의 주소의 NFT 를 구매자의 주소로 전송한다.
+      operationId: transferNft
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - buyAddress
+                - ownerPrivateKey
+                - ownerAddress
+                - tokenId
+              properties:
+                tokenId:
+                  type: integer
+                  format: int64
+                  example: 3001
+                  description: 창작물 NFT의 tokenId
+                ownerPrivateKey:
+                  type: string
+                  example: "0x6704c35bddff962675e3dac64fcbb325c18ee679a84613b91377c508edf18853"
+                  description: '소유자의 개인키 (0x 포함 66자리)'
+                ownerAddress:
+                  type: string
+                  example: '0xB095af48217ff0ecC64b86068D3d6728c93B2A0b'
+                  description: '소유자 address'
+                buyAddress:
+                  type: string
+                  example: '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
+                  description: '구매자 address'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  data:
+                    txId: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+                    tokenId: 1
+                  message: 구매가 완료되었습니다.
+                  statusCode: 0000
+#  /orders:
+#    patch:
+#      tags:
+#        - order
+#      summary: 사용자가 창작물 구매
+#      description: 사용자가 창작물 구매를 하게 되면, 정해진 가격의 포인트 토큰이 창작자에게 전송이 되고, 사용권 NFT가 발급 된다.
+#      operationId: registerOrder
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              required:
+#                - buyAddress
+#                - buyPrivateKey
+#                - tokenId
+#                - price
+#              properties:
+#                buyAddress:
+#                  type: string
+#                  example: '0xCD554b4073ede3c488570c8Bb6AC76804b2d916F'
+#                  description: 구매자의 address
+#                buyPrivateKey:
+#                  type: string
+#                  example: "0xa45e8f0b100cf5275219fcb9950e5591e7cb60f5d6e64a93ea2d446a56ca1d91"
+#                  description: 구매자의 개인키 (0x 포함 66자리)
+#                tokenId:
+#                  type: integer
+#                  format: int64
+#                  example: 1
+#                  description: 창작물 NFT의 tokenId
+#                price:
+#                  type: integer
+#                  format: int64
+#                  example: 1000
+#                  description: 창작물 NFT의 가격(point)
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OrderResponse'
+#  /purchase/tokenId/{tokenId}/holders:
+#    get:
+#      tags:
+#        - purchase
+#      summary: 토큰아이디로 구매자리스트 조회
+#      description: 토큰아이디로 해당 창작물의 구매자 리스트를 조회한다.
+#      operationId: findHolderListByTokenId
+#      parameters:
+#        - name: tokenId
+#          in: path
+#          description: 조회하고자 하는 token Id
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#            example: 1
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/UseRightHolderResponse'
+#  /purchase/address/{address}/purchase-list:
+#    get:
+#      tags:
+#        - purchase
+#      summary: 사용자 address로 구매한 tokenId 리스트 조회
+#      description: 해당 계정의 사용자가 구매한 창작물 tokenId 리스트를 조회한다.
+#      operationId: findPurchaseListByAddress
+#      parameters:
+#        - name: address
+#          in: path
+#          description: 조회하고자 하는 address 구매자의 address
+#          required: true
+#          schema:
+#            type: string
+#            example: '0xCD554b4073ede3c488570c8Bb6AC76804b2d916F'
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/PurchaseListResponse'
+#        '400':
+#          description: Invalid ID supplied
+#        '404':
+#          description: Pet not found
+#  /nfts/{address}/balance:
+#    get:
+#      tags:
+#        - nfts
+#      summary: NFT balance 조회
+#      description: address의 NFT balance 를 조회 한다.
+#      operationId: findNFTBalanceByAddress
+#      parameters:
+#        - name: address
+#          in: path
+#          description: 조회하고자 하는 address
+#          required: true
+#          schema:
+#            type: string
+#            example: '0xfe3b557e8fb62b89f4916b721be55ceb828dbd73'
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/NFTBalanceResponse'
+  /nfts/mint-nftv2:
+    post:
+      tags:
+        - nfts
+      summary: NFT 민팅 테스트용
+      description: 테스트를 위한 NFT 민팅
+      operationId: mintNFTTest
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  data:
+                    blockHash: '0xf1c263ab82bba93867d770b2b0dfe2a2c89b3192bf4ab89f48547b96f121a2b6'
+                    blockNumber: 178244
+                    contractAddress:
+                    cumulativeGasUsed: 264770
+                    from: '0xf17f52151ebef6c7334fad080c5704d77216b732'
+                    gasUsed: 264770
+                    effectiveGasPrice: 0
+                    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000020000080000020000000000000000000000000000000008000000000000000000000000000000000000000000000000020000000000000000000800000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c00000000000000000400000000002000000000200000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000040000000000'
+                    status: true
+                    to: '0xb9a219631aed55ebc3d998f17c3840b7ec39c0cc'
+                    transactionHash: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+                    transactionIndex: 0
+                    events:
+                      Transfer:
+                        address: '0xb9A219631Aed55eBC3D998f17C3840B7eC39C0cc'
+                        blockNumber: 178244
+                        transactionHash: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+                        transactionIndex: 0
+                        blockHash: '0xf1c263ab82bba93867d770b2b0dfe2a2c89b3192bf4ab89f48547b96f121a2b6'
+                        logIndex: 0
+                        removed: false
+                        id: log_87b7c55a
+                        returnValues:
+                          '0': '0x0000000000000000000000000000000000000000'
+                          '1': '0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73'
+                          '2': '3'
+                          from: '0x0000000000000000000000000000000000000000'
+                          to: '0xFE3B557E8Fb62b89F4916B721be55cEb828dBd73'
+                          tokenId: '3'
+                        event: Transfer
+                        signature: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+                        raw:
+                          data: 0x
+                          topics:
+                            - '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+                            - '0x0000000000000000000000000000000000000000000000000000000000000000'
+                            - '0x000000000000000000000000fe3b557e8fb62b89f4916b721be55ceb828dbd73'
+                            - '0x0000000000000000000000000000000000000000000000000000000000000003'
+                  message: 민팅이 완료되었습니다.
+                  statusCode: 0000
+#  /tokens/{userAddress}/balance:
+#    get:
+#      tags:
+#        - tokens
+#      summary: 사용자 계정으로 잔액 조회
+#      description: 사용자 계정의 point 잔액(token)을 조회한다.
+#      operationId: findTokenBalanceByAddress
+#      parameters:
+#        - name: userAddress
+#          in: path
+#          description: 잔액 조회를 하고자 하는 사용자 계정
+#          required: true
+#          schema:
+#            type: string
+#            example: '0x1354ea8A6cc7c0703870D9CE74d1cabc67D3932e'
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/TokenBalanceResponse'
+#  /tokens/transfer:
+#    patch:
+#      tags:
+#        - tokens
+#      summary: 포인트 사용
+#      description:
+#      operationId: transferToken
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              properties:
+#                privateKey:
+#                  type: string
+#                  description: '구매자의 privateKey'
+#                  example: '0x90d2816db67eccf1d8f2206512155f30abee6427c4c9c61be920651cfb4870fc'
+#                address:
+#                  type: string
+#                  example: '0x1524CBDB78A4C438FcbC5026F77Be066eb9f6c32'
+#                  description: '구매자의 publicKey'
+#                toAddress:
+#                  type: string
+#                  example: '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
+#                  description: '저작권의 publickKey'
+#                amount:
+#                  type: integer
+#                  description: '전송할 포인트'
+#                  example: 1000
+#      responses:
+#        '200':
+#          description: successful operation
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/TokenTransferResponse'
+#        '500':
+#          description: Invalid ID supplied
+#        '404':
+#          description: Pet not found
+#        '405':
+#          description: Validation exception
+#      security:
+#        - petstore_auth:
+#            - write:pets
+#            - read:pets
+#        '400':
+#          description: Invalid ID supplied
+#        '404':
+#          description: Pet not found
+#      security:
+#        - api_key: []
+#        - petstore_auth:
+#            - write:pets
+#            - read:pets
+components:
+  schemas:
+    AccountsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "계정 생성이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          $ref: '#/components/schemas/Accounts'
+    Accounts:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "0xe540aCB67C232ce94113dF77731CaF51C64d6611"
+          description: 생성된 공개키 주소(0x 포함 42자리)
+        privateKey:
+          type: string
+          example: "0x395c2600cca11408d7a8278cd44c91e3ccc5dae7ce5ac88a14d452eb691e4b5d"
+          description: 생성된 개인키 (0x 포함 66자리)
+    TokenBalanceResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: object
+          properties:
+            balance:
+              type: integer
+              example: 20000000000
+    PurchaseListResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseItem'
+    PurchaseItem:
+      type: object
+      properties:
+        tokenId:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 1
+    UseRightHolderResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UseRightHolder'
+    UseRightHolder:
+      type: object
+      properties:
+        buyAddress:
+          type: string
+          example: '0xB095af48217ff0ecC64b86068D3d6728c93B2A0b'
+        amount:
+          type: integer
+          example: 1
+    OrderResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: object
+          properties:
+            useRightNFT:
+              $ref: '#/components/schemas/UseRightNFT'
+            tokenTransfer:
+              $ref: '#/components/schemas/TokenTransfer'
+    UseRightNFT:
+      type: object
+      properties:
+        txId:
+          type: string
+          example: "0x00108068d9dadf5c6794589a6fbdf7e782b0ae41cccf4792cca7ede4ed2b25a8"
+        to:
+          type: string
+          example: "0xB095af48217ff0ecC64b86068D3d6728c93B2A0b"
+        tokenId:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 1
+    TokenTransfer:
+      type: object
+      properties:
+        txId:
+          type: string
+          example: "0x57325dde848d71b94d0416793ee24855cabfdb7125fd989d4aa650c6acb0e7b3"
+        from:
+          type: string
+          example: "0xB095af48217ff0ecC64b86068D3d6728c93B2A0b"
+        to:
+          type: string
+          example: "0xf17f52151EbEF6C7334FAD080c5704D77216b732"
+        value:
+          type: integer
+          example: 1000
+    NFTBalanceResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: object
+          properties:
+            balance:
+              type: integer
+              example: 2
+    OwnersOfDataResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          type: array
+          example: [
+            "0x9C1f5fBC4EBAB00fF8B18d5651317F1e739ae1ee",
+            "0xf17f52151EbEF6C7334FAD080c5704D77216b732"
+          ]
+          description: 계정 소유자들의 공개키 주소 배열
+    TxIdResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          $ref: '#/components/schemas/TxInfoData'
+    TxInfoData:
+      type: object
+      properties:
+        blockHash:
+          type: string
+          example: '0xfe90d57a329d619c2e1f2d0eff411873ae80b3cecdef0797eeac8a0f1eb0b70a'
+        blockNumber:
+          type: integer
+          example: 45417
+        txId:
+          type: string
+          example: "0x40e2374e7fe2ebe31b5cd6d3a35d844647fa32ae6ba86b1fbf6060be707d2f70"
+        from:
+          type: string
+          example:  '0x0000000000000000000000000000000000000000'
+        to:
+          type: string
+          example: '0x9C1f5fBC4EBAB00fF8B18d5651317F1e739ae1ee'
+        tokenId:
+          type: integer
+          format: int64
+          example: 5617
+        blockDateTime:
+          type: string
+          format: date-time
+          example: 2022-11-14T04:41:06
+    NFTMetaDataResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "요청이 완료되었습니다."
+        statusCode:
+          type: string
+          example: "0000"
+        data:
+          $ref: '#/components/schemas/NFTMetaData'
+    NFTMetaData:
+      type: object
+      properties:
+        attribute:
+          type: array
+          items:
+            $ref: '#/components/schemas/NFTMetaDataAttribute'
+        description:
+          type: string
+          example: "The world's most adorable and sensitive pup."
+        image:
+          type: string
+          example: "http://dafdsafjdlk.comasd/fdasjfjaoijdflsdaj"
+    NFTMetaDataAttribute:
+      type: object
+      properties:
+        trait_type:
+          type: string
+          example: "Eye color"
+        value:
+          type: string
+          example: Mocha
+#    User:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 10
+#        username:
+#          type: string
+#          example: theUser
+#        firstName:
+#          type: string
+#          example: John
+#        lastName:
+#          type: string
+#          example: James
+#        email:
+#          type: string
+#          example: john@email.com
+#        password:
+#          type: string
+#          example: '12345'
+#        phone:
+#          type: string
+#          example: '12345'
+#        userStatus:
+#          type: integer
+#          description: User Status
+#          format: int32
+#          example: 1
+#      xml:
+#        name: user
+#    Tag:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#        name:
+#          type: string
+#      xml:
+#        name: tag
+#    Pet:
+#      required:
+#        - name
+#        - photoUrls
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 10
+#        name:
+#          type: string
+#          example: doggie
+#        photoUrls:
+#          type: array
+#          xml:
+#            wrapped: true
+#          items:
+#            type: string
+#            xml:
+#              name: photoUrl
+#        tags:
+#          type: array
+#          xml:
+#            wrapped: true
+#          items:
+#            $ref: '#/components/schemas/Tag'
+#        status:
+#          type: string
+#          description: pet status in the store
+#          enum:
+#            - available
+#            - pending
+#            - sold
+#      xml:
+#        name: pet
+    ApiResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+          example: 0000
+        data:
+          type: object
+          example:
+        message:
+          type: string
+          example: 요청이 완료되었습니다.
+#      xml:
+#        name: '##default'
+#  requestBodies:
+#    Pet:
+#      description: Pet object that needs to be added to the store
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/Pet'
+#        application/xml:
+#          schema:
+#            $ref: '#/components/schemas/Pet'
+#    UserArray:
+#      description: List of user object
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/User'
+#  securitySchemes:
+#    petstore_auth:
+#      type: oauth2
+#      flows:
+#        implicit:
+#          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+#          scopes:
+#            write:pets: modify pets in your account
+#            read:pets: read your pets
+#    api_key:
+#      type: apiKey
+#      name: api_key
+#      in: header

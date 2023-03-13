@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title><%=data.title %></title>
+        <script src="/assets/jquery/dist/jquery.min.js"></script>
+        <!-- Include Fancytree skin and library -->
+        <link href="/assets/jquery.fancytree/dist/skin-win8/ui.fancytree.min.css" rel="stylesheet">
+        <script src="/assets/jquery.fancytree/dist/jquery.fancytree-all-deps.min.js"></script>
+        <script src="/assets/d3-mitch-tree/dist/js/d3-mitch-tree.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/assets/d3-mitch-tree/dist/css/d3-mitch-tree.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/d3-mitch-tree/dist/css/d3-mitch-tree-theme-default.css">
+        <script src="/assets/foundation-sites/dist/js/foundation.min.js"></script>  <!-- Required -->
+        <link rel="stylesheet" href="/assets/foundation-sites/dist/css/foundation.min.css">
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="grid-x margin-top-3">
+                <div class="cell">
+                    <h3 class=""><%=data.title %></h3>
+                </div>v
+            </div>
+            <div class="grid-x callout align-middle grid-margin-x">
+                <div class="cell medium-4 large-4">
+                    <div height="100%" >
+                        <!--<img src="https://mimg.segye.com/content/image/2020/06/16/20200616522238.jpg" >-->
+                        <img src="<%=data.metaData.image%>" alt="<%= data.metaData.name%>"/>
+                    </div>
+                </div>
+                <div class="cell medium-8 large-8">
+                    <div class="grid-y">
+                        <div class="cell callout">
+                            <h5>창작물 등록 정보</h5>
+                            <ul class="no-bullet">
+                                <li>창작물명 : <%=data.metaData.name %></li>
+                                <li>이미지 URL : http://www.vizinf.com/wp-content/uploads/2022/06/VIZinf_logo.png</li>
+                            </ul>
+                        </div>
+                        <div class="cell callout">
+                            <h5>NFT 소유정보</h5>
+                            <ul class="no-bullet">
+<!--                                <li>blockHash : <%=data.metaData.blockHash %></li>-->
+
+                                <li>tokenId : 2</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="tree"  class="grid-x callout align-middle grid-margin-x"></div>
+            <div id="visualisation" class="grid-x callout align-middle grid-margin-x"></div>
+        </div>
+
+        <script type="text/javascript">
+          $(function(){  // on page load
+            // Create the tree inside the <div id="tree"> element.
+            $("#tree").fancytree({
+              extensions: ["edit", "filter"],
+              source: [
+                {title: "Node 1", key: "1"},
+                {title: "Folder 2", key: "2", folder: true, children: [
+                    {title: "Node 2.1", key: "3"},
+                    {title: "Node 2.2", key: "4"}
+                  ]}
+              ],
+            });
+            // Note: Loading and initialization may be asynchronous, so the nodes may not be accessible yet.
+          });
+        </script>
+        <script>
+          var data = {
+            "id": 1,
+            "name": "Animals",
+            "type": "Root",
+            "description": "A living organism that feeds on organic matter",
+            "children": [
+              {
+                "id": 2,
+                "name": "Carnivores",
+                "type": "Type",
+                "description": "Diet consists solely of animal materials",
+                "children": [
+                  {
+                    "id": 3,
+                    "name": "Felidae",
+                    "type": "Family",
+                    "description": "Also known as cats",
+                    "children": [
+                      {
+                        "id": 4,
+                        "name": "Siamese Cat",
+                        "type": "Organism",
+                        "description": "A breed of Asian cat. it has white fur",
+                        "children": []
+                      },
+                      {
+                        "id": 5,
+                        "name": "Javanese Cat",
+                        "type": "Organism",
+                        "description": "Domestic breed of cats, of oriental origin",
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": 6,
+                    "name": "Ursidae",
+                    "type": "Family",
+                    "description": "Also known as bears",
+                    "children": [
+                      {
+                        "id": 7,
+                        "name": "Polar Bear",
+                        "type": "Organism",
+                        "description": "White bear native to the Arctic Circle",
+                        "children": []
+                      },
+                      {
+                        "id": 8,
+                        "name": "Panda Bear",
+                        "type": "Organism",
+                        "description": "Spotted bear native to South Central China",
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": 9,
+                    "name": "Canidae",
+                    "type": "Family",
+                    "description": "Also known as dogs",
+                    "children": [
+                      {
+                        "id": 10,
+                        "name": "Labradore Retriever",
+                        "type": "Organism",
+                        "description": "One of the most popular dog breeds in Canada, UK and USA",
+                        "children": []
+                      },
+                      {
+                        "id": 11,
+                        "name": "Golden Retriever",
+                        "type": "Organism",
+                        "description": "Generally friendly, loyal and intelligent breed of dogs",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": 12,
+                "name": "Herbivores",
+                "type": "Type",
+                "description": "Diet consists solely of plant matter",
+                "children": [
+                  {
+                    "id": 13,
+                    "name": "Bovidae",
+                    "type": "Family",
+                    "description": "Also known as cattle or cows",
+                    "children": [
+                      {
+                        "id": 14,
+                        "name": "Angus Cattle",
+                        "type": "Organism",
+                        "description": "Scottish breed of black cattle",
+                        "children": []
+                      },
+                      {
+                        "id": 15,
+                        "name": "Holstein Friesian Cattle",
+                        "type": "Organism",
+                        "description": "Known as the highest-production dairy animals",
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": 16,
+                    "name": "Equidae",
+                    "type": "Family",
+                    "description": "Also known as horses",
+                    "children": [
+                      {
+                        "id": 17,
+                        "name": "Barb Horse",
+                        "type": "Organism",
+                        "description": "A breed of Northern African horses with high stamina and hardiness. Their generally hot temperament makes it harder to tame.",
+                        "children": []
+                      },
+                      {
+                        "id": 21,
+                        "name": "Holsteiner Horse",
+                        "type": "Organism",
+                        "description": "One of the oldest of warmblood breeds, tracing back to the 13th century. Originates from Germany",
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": 19,
+                    "name": "Leporidae",
+                    "type": "Family",
+                    "description": "Also known as rabbits",
+                    "children": [
+                      {
+                        "id": 20,
+                        "name": "Lionhead rabbit",
+                        "type": "Organism",
+                        "description": "Unusual rabbit with a wool mane circling it's head, similar to a lion, hence it's name.",
+                        "children": []
+                      },
+                      {
+                        "id": 21,
+                        "name": "Silver Fox Rabbit",
+                        "type": "Organism",
+                        "description": "Bred for their meat and unique fur.",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          };
+
+
+          const treePlugin = new d3.mitchTree.boxedTree()
+            //.setIsFlatData(true)
+            .setData(data)
+            .setElement(document.getElementById("visualisation"))
+            .setIdAccessor(function(data) {
+              return data.id;
+            })
+            .setParentIdAccessor(function(data) {
+              return data.parentId;
+            })
+            .setChildrenAccessor(function(data) {
+              return data.children;
+            })
+            .setBodyDisplayTextAccessor(function(data) {
+              return data.description;
+            })
+            .setTitleDisplayTextAccessor(function(data) {
+              return data.name;
+            })
+            .setMinScale(0)
+            .on("nodeClick", function(event) {
+              // This would cancel collapse of nodes,
+              // but it'll still select the node
+              // and center to it
+              this.removeSelection(this.getRoot());
+              event.nodeDataItem.selected = true;
+              if (this.getAllowNodeCentering())
+                this.centerNode(event.nodeDataItem);
+
+              this.update();
+
+              // Cancel the collapse event
+              if (event.type === 'collapse')
+                event.preventDefault();
+            })
+            .initialize();
+
+
+          // Expand all nodes
+          const nodes = treePlugin.getNodes();
+          nodes.forEach(function(node, index, arr) {
+            treePlugin.expand(node);
+          });
+          treePlugin.update(treePlugin.getRoot());
+        </script>
+    </body>
+</html>

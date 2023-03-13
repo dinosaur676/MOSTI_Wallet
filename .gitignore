@@ -1,0 +1,9 @@
+node_modules
+yarn*
+logs
+.idea
+/src/build/swagger.yaml
+src/public/apidoc
+/build/swagger.yaml
+/src/apidoc/nftApiDoc.sample
+/contracts/*
