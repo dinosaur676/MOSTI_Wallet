@@ -8,7 +8,7 @@ MOSTI_Wallet
 - `Node.js`
 - `Solidity`
 - **IDE** : InteliJ(2022.3), visual Studio Code
-- **DataBase** : [ ]
+- **DataBase** : MySQL
 
 ## :date: 개발 기간
 [YYYY.MM.DD] ~ [YYYY.MM.DD]
