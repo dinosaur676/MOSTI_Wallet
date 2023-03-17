@@ -20,28 +20,29 @@ router.get("/txId/:txId", async (req, res, next) => {
     });
 });
 
-router.get("/:tokenId/history", async (req, res, next) => {
+router.get("/:userAddress/tokens", async (req, res, next) => {
   nftService
-    .getNFTTransferInfo(req.params.tokenId)
-    .then((data) => {
-      res.json(resUtil.convertRes(data));
-    })
-    .catch((err) => {
-      next(err);
-    });
+      .getTokens(req.params.address)
+      .then((data) => {
+          res.json(resUtil.convertRes(data));
+      })
+      .catch((err) => {
+          next(err);
+      });
 });
 
-router.post("/mint-nft", async (req, res, next) => {
+router.post("/mint-token", async (req, res, next) => {
   const mintNFTDTO = req.body;
+
   await nftValidate.mintNFT(mintNFTDTO).catch((err) => next(err));
   nftService
-    .mintNFT(mintNFTDTO)
-    .then(async (data) => {
-      res.json(resUtil.convertRes(data, "민팅이 완료되었습니다."));
-    })
-    .catch((err) => {
-      next(err);
-    });
+      .mintToken(mintNFTDTO)
+      .then(async (data) => {
+          res.json(resUtil.convertRes(data, "민팅이 완료되었습니다."));
+      })
+      .catch((err) => {
+          next(err);
+      });
 });
 
 router.get("/:userAddress/balance", async (req, res, next) => {

@@ -6,30 +6,33 @@ const { timestampToTimezoneDatetime } = require("../utils/time-utils");
 const truffleConfig = require("../../truffle-config");
 const NFT = require("../../build/contracts/DGNFT.json");
 
-const { ADMIN_ADDRESS, ERC721_CONTRACT_ADDRESS, BESU_NODE1 } = process.env;
+const { TEST_ADDRESS, TEST_CONTRACT_ADDRESS, TEST_NODE1 } = process.env;
+const ADMIN_ADDRESS = TEST_ADDRESS;
+const CONTRACT_ADDRESS = TEST_CONTRACT_ADDRESS;
+const NODE1 = TEST_NODE1;
 const nftMetaData = require("./nft-metadata.json");
 
 const web3 = new Web3(truffleConfig.networks.development.provider);
 
 const adminContract = () => {
   Contract.setProvider(truffleConfig.networks.development.provider);
-  return new Contract(NFT.abi, ERC721_CONTRACT_ADDRESS);
+  return new Contract(NFT.abi, CONTRACT_ADDRESS);
 };
 const userContract = (privateKey) => {
-  const privateKeyProvider = new PrivateKeyProvider(privateKey, BESU_NODE1);
+  const privateKeyProvider = new PrivateKeyProvider(privateKey, NODE1);
   Contract.setProvider(privateKeyProvider);
-  return new Contract(NFT.abi, ERC721_CONTRACT_ADDRESS);
+  return new Contract(NFT.abi, CONTRACT_ADDRESS);
 };
 
-module.exports.mintNFT = async (toAddress, metaData) => {
+module.exports.mintToken = async (toAddress, metaData) => {
   const mintNftContract = adminContract();
   return await mintNftContract.methods
-    .mintNFT(toAddress, metaData)
-    .send({ from: ADMIN_ADDRESS })
-    .then((data) => {
-      return Promise.resolve(data);
-    })
-    .catch((err) => Promise.reject(err));
+      .mintToken(toAddress, metaData)
+      .send({ from: ADMIN_ADDRESS })
+      .then((data) => {
+        return Promise.resolve(data);
+      })
+      .catch((err) => Promise.reject(err));
 };
 module.exports.mintNFTWithMQ = async (param, channel, msg) => {
   const mintNftContract = adminContract();
@@ -86,15 +89,15 @@ module.exports.getTransactionInfo = async (transactionHash) => {
   };
 };
 
-module.exports.getNFTTransferInfo = async (tokenId) => {
+module.exports.getTokens = async (address) => {
   const mintNftContract = adminContract();
   return await mintNftContract.methods
-    .transferInfo(tokenId)
-    .call()
-    .then((data) => {
-      return Promise.resolve(data);
-    })
-    .catch((err) => Promise.reject(err));
+      .getTokens(address)
+      .call()
+      .then((data) => {
+        return Promise.resolve(data);
+      })
+      .catch((err) => Promise.reject(err));
 };
 
 module.exports.transferNft = async (

@@ -4,6 +4,7 @@ const { CustomError } = require("../error/CustomError");
 
 const nftService = {
   createAccount: async () => {
+    //TODO : 블록체인에 address 매핑
     const account = await nftContract.createAccount();
     return account;
   },
@@ -21,16 +22,16 @@ const nftService = {
       blockDateTime,
     };
   },
-  getNFTTransferInfo: async (tokenId) => {
-    return await nftContract.getNFTTransferInfo(tokenId);
+  getTokens: async (address) => {
+    return await nftContract.getTokens(address);
   },
-  mintNFT: async (mintNFTDTO) => {
-    const data = await nftContract.mintNFT(
-      mintNFTDTO.address,
-      JSON.stringify(mintNFTDTO.metaData)
+  mintToken: async (mintTokenDto) => {
+    const data = await nftContract.mintToken(
+        mintTokenDto.address,
+        JSON.stringify(mintNFTDTO.metaData)
     );
     return {
-      tokenId: data.events.Transfer.returnValues.tokenId,
+      tokenURI: data.events.Transfer.returnValues.tokenURI,
       txId: data.transactionHash,
     };
   },
