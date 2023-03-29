@@ -33,6 +33,7 @@
     "ethereumjs-wallet": "^1.0.2",
     "express": "~4.16.1",
     "foundation-sites": "^6.7.5",
+    "ganache-cli": "^6.12.2",
     "http-errors": "~1.6.3",
     "jquery": "^3.6.1",
     "jquery.fancytree": "^2.38.2",

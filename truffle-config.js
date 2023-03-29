@@ -55,15 +55,15 @@ require("dotenv").config({
       ? ".externaldev.env"
       : process.env.NODE_ENV === "dev"
       ? ".dev.env"
-      : ".externaldev.env"
+      : ".dev.env"
   ),
 });
 
-const { TEST_PRIVATE_KEY, TEST_NODE1 } = process.env;
+const { ADMIN_PRIVATE_KEY, BESU_NODE1 } = process.env;
 const PrivateKeyProvider = require("@truffle/hdwallet-provider");
 
-const privateKey = TEST_PRIVATE_KEY;
-const Node = TEST_NODE1;
+const privateKey = ADMIN_PRIVATE_KEY;
+const Node = BESU_NODE1;
 
 console.log(Node);
 console.log(privateKey);
@@ -91,9 +91,9 @@ module.exports = {
     //
     development: {
       provider: privateKeyProvider,
-      host: "127.0.0.1",
-      port: "7545",
       network_id: "*",
+      host: "172.30.1.174",
+      port: "8545",
       gasPrice: 0,
     }, // Localhost (default: none)
     //  host: "localhost"
