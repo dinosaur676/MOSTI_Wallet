@@ -1,0 +1,294 @@
+openapi: 3.0.3
+info:
+  title: SBT Manager
+  description: Title
+  version: 0.2.1
+servers:
+  - url: 'http://localhost:3000/api/v1'
+tags:
+  - name: admin
+    description: Admin 관련
+  - name: user
+    description: User 관련
+  - name: accounts
+    description: 블록체인 계정 생성
+paths:
+  /accounts:
+    post:
+      tags:
+        - accounts
+      summary: 계정생성
+      description: 계정생성 후 해당계정의 공개키와 비밀키를 리턴한다.
+      operationId: createAccount
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsResponse'
+  /nfts/admin-create-token:
+    post:
+      tags:
+        - admin
+      summary: 토큰 생성
+      description: 토큰을 생성후 tokenID와 Owner를 반환한다.
+      operationId: adminCreateToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                tokenOwner:
+                  type: string
+                  example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
+                  description: 생성한 토큰의 주인
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /nfts/admin-mint-token:
+    post:
+      tags:
+        - admin
+      summary: 상대방에게 토큰 발급
+      description: 토큰을 발급
+      operationId: adminMintToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MintRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+  /nfts/admin-burn-token:
+    post:
+      tags:
+        - admin
+      summary: 상대방에게 토큰 회수
+      description: 토큰을 회수
+      operationId: adminBurnToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MintRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
+  /nfts/user-create-token:
+    post:
+      tags:
+        - user
+      summary: 토큰 생성
+      description: 토큰을 생성후 tokenID와 Owner를 반환한다.
+      operationId: userCreateToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                tokenOwner:
+                  type: string
+                  example: '0x16a4C4B2D3839b015a294C9785665200025228AC'
+                  description: 생성한 토큰의 주인
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /nfts/user-mint-token:
+    post:
+      tags:
+        - user
+      summary: 상대방에게 토큰 발급
+      description: 토큰을 발급
+      operationId: userMintToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MintRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+  /nfts/user-burn-token:
+    post:
+      tags:
+        - user
+      summary: 상대방에게 토큰 회수
+      description: 토큰을 회수
+      operationId: userBurnToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MintRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MintResponse'
+
+
+components:
+  schemas:
+    UserBurnResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 토큰 회수가 완료되었습니다.
+        statusCode:
+          type: string
+          example: '0000'
+        data:
+          $ref: '#/components/schemas/UserBurnResponseData'
+
+    UserBurnResponseData:
+      type: object
+      properties:
+        to:
+          type: string
+          example: '0xA31B3167668B275242335f652A9663970011bA20'
+          description: to 지갑 주소
+        tokenId:
+          type: integer
+          example: 0
+          description: 토큰 ID
+        txId:
+          type: string
+          example: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+          description: 트랜잭션 ID
+
+    Response:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 토큰 발급 또는 회수가 완료되었습니다.
+        statusCode:
+          type: string
+          example: '0000'
+        data:
+          $ref: '#/components/schemas/MintResponseData'
+
+    ResponseData:
+      type: object
+      properties:
+        tokenOwner:
+          type: string
+          example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
+          description: 토큰 주인 주소
+        to:
+          type: string
+          example: '0xA31B3167668B275242335f652A9663970011bA20'
+          description: to 지갑 주소
+        tokenId:
+          type: integer
+          example: 0
+          description: 토큰 ID
+        txId:
+          type: string
+          example: '0x0d565d060e476d5a5bf64af56ba16720c6e5f40ae8cd1307a1d10c0e1e7ddb3e'
+          description: 트랜잭션 ID
+
+
+    MintRequest:
+      type: object
+      properties:
+        tokenOwner:
+          type: string
+          example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
+          description: 토큰 주인 주소
+        to:
+          type: string
+          example: '0xA31B3167668B275242335f652A9663970011bA20'
+          description: 토큰을 받을 지갑 주소
+        tokenId:
+          type: integer
+          example: 0
+          description: 토큰 ID
+
+    TokenResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 토큰 생성이 완료되었습니다.
+        statusCode:
+          type: string
+          example: '0000'
+        data:
+          $ref: '#/components/schemas/Token'
+
+    Token:
+      type: object
+      properties:
+        tokenID:
+          type: integer
+          example: 0
+          description: 생성된 토큰의 ID
+        Owner:
+          type: string
+          example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
+          description: 토큰의 주인
+
+    AccountsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 계정 생성이 완료되었습니다.
+        statusCode:
+          type: string
+          example: '0000'
+        data:
+          $ref: '#/components/schemas/Accounts'
+
+    Accounts:
+      type: object
+      properties:
+        address:
+          type: string
+          example: '0xe540aCB67C232ce94113dF77731CaF51C64d6611'
+          description: 생성된 공개키 주소(0x 포함 42자리)
+        privateKey:
+          type: string
+          example: '0x395c2600cca11408d7a8278cd44c91e3ccc5dae7ce5ac88a14d452eb691e4b5d'
+          description: 생성된 개인키 (0x 포함 66자리)
+
+    ApiResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+          example: 0
+        data:
+          type: object
+          example: null
+        message:
+          type: string
+          example: 요청이 완료되었습니다.
