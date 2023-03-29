@@ -4,10 +4,83 @@ const { CustomError } = require("../error/CustomError");
 
 const nftService = {
   createAccount: async () => {
-    //TODO : 블록체인에 address 매핑
     const account = await nftContract.createAccount();
     return account;
   },
+
+  admin_mintToken: async (mintDTO) => {
+    const data = await nftContract.admin_Mint(
+      mintDTO.tokenOwner,
+      mintDTO.to,
+      mintDTO.tokenId
+    );
+
+    if (data === undefined) return { Error: "Required" };
+
+    return {
+      tokenOwner: mintDTO.tokenOwner,
+      to: data.to,
+      tokenId: data.events.Mint.returnValues.tokenId,
+    };
+  },
+
+  admin_burnToken: async (burnDTO) => {
+    const data = await nftContract.admin_Burn(
+      burnDTO.tokenOwner,
+      burnDTO.to,
+      burnDTO.tokenId
+    );
+
+    if (data === undefined) return { Error: "Required" };
+
+    return {
+      tokenOwner: burnDTO.tokenOwner,
+      to: data.to,
+      tokenId: data.events.Burn.returnValues.tokenId,
+    };
+  },
+
+  admin_createToken: async (address) => {
+    const data = await nftContract.admin_createToken(address);
+
+    return {
+      tokenOwner: data.to,
+      tokenId: data.events.CreateToken.returnValues.tokenId,
+    };
+  },
+
+  user_mintToken: async (mintSoulDTO) => {
+    const data = await nftContract.user_Mint(
+      mintSoulDTO.tokenOwner,
+      mintSoulDTO.to,
+      mintSoulDTO.tokenId
+    );
+
+    return {
+      tokenOwner: mintSoulDTO.tokenOwner,
+      to: data.to,
+      tokenId: data.events.Mint.returnValues.tokenId,
+    };
+  },
+
+  user_burnToken: async (burnDTO) => {
+    const data = await nftContract.user_Burn(burnDTO.to, burnDTO.tokenId);
+
+    return {
+      to: data.to,
+      tokenId: data.events.Burn.returnValues.tokenId,
+    };
+  },
+
+  user_createToken: async (address) => {
+    const data = await nftContract.user_createToken(address);
+
+    return {
+      tokenOwner: data.to,
+      tokenId: data.events.CreateToken.returnValues.tokenId,
+    };
+  },
+
   getTransactionInfo: async (transactionHash) => {
     const { transferData, hexTransactionData, blockDateTime } =
       await nftContract.getTransactionInfo(transactionHash);
@@ -21,62 +94,6 @@ const nftService = {
       tokenId: transferData.tokenId,
       blockDateTime,
     };
-  },
-  getTokens: async (address) => {
-    return await nftContract.getTokens(address);
-  },
-  mintToken: async (mintTokenDto) => {
-    const data = await nftContract.mintToken(
-        mintTokenDto.address,
-        JSON.stringify(mintNFTDTO.metaData)
-    );
-    return {
-      tokenURI: data.events.Transfer.returnValues.tokenURI,
-      txId: data.transactionHash,
-    };
-  },
-  mintNFTV2: async (mintNFTDTO) => {
-    const data = await nftContract.mintNFT(
-      mintNFTDTO.address,
-      JSON.stringify({
-        image: mintNFTDTO.image,
-      })
-    );
-    return {
-      tokenId: data.events.Transfer.returnValues.tokenId,
-      txId: data.transactionHash,
-    };
-  },
-  getNFTBalance: async (userAddress) => {
-    return await nftContract.getNFTBalance(userAddress);
-  },
-  getNFT: async (tokenId) => {
-    const data = await nftContract
-      .getNFT(tokenId)
-      .catch((err) => console.log(err));
-    return JSON.parse(data);
-  },
-  transferNft: async (nftTransferDTO) => {
-    const ownerPrivateKey = nftTransferDTO.ownerPrivateKey.startsWith("0x")
-      ? nftTransferDTO.ownerPrivateKey.substring(2)
-      : nftTransferDTO.ownerPrivateKey;
-    return await nftContract
-      .transferNft(
-        ownerPrivateKey,
-        nftTransferDTO.ownerAddress,
-        nftTransferDTO.buyAddress,
-        nftTransferDTO.tokenId
-      )
-      .then((data) => {
-        return {
-          txId: data.transactionHash,
-          tokenId: data.events.Transfer.returnValues.tokenId,
-        };
-      })
-      .catch((err) => {
-        logger.error(err);
-        return Promise.reject(new CustomError({ code: 9999 }));
-      });
   },
 };
 

@@ -12,18 +12,18 @@
  * --------------------------------
  *
  * Do you have a complex application that requires lots of transactions to deploy?
- * Use this appproach to make deployment a breeze 🏖️:
+ * Use this approach to make deployment a breeze 🏖️:
  *
  * Infura deployment needs a wallet provider (like @truffle/hdwallet-provider)
  * to sign transactions before they're sent to a remote public node.
  * Infura accounts are available for free at 🔍: https://infura.io/register
  *
  * You'll need a mnemonic - the twelve word phrase the wallet uses to generate
- * public/private key pairs. You can store your secrets 🤐 in a .dev.env file.
+ * public/private key pairs. You can store your secrets 🤐 in a .env file.
  * In your project root, run `$ npm install dotenv`.
- * Create .dev.env (which should be .gitignored) and declare your MNEMONIC
+ * Create .env (which should be .gitignored) and declare your MNEMONIC
  * and Infura PROJECT_ID variables inside.
- * For example, your .dev.env file will have the following structure:
+ * For example, your .env file will have the following structure:
  *
  * MNEMONIC = <Your 12 phrase mnemonic>
  * PROJECT_ID = <Your Infura project id>
@@ -41,6 +41,10 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
+// require('dotenv').config();
+// const { MNEMONIC, PROJECT_ID } = process.env;
+
+// const HDWalletProvider = require('@truffle/hdwallet-provider');
 const path = require("path");
 require("dotenv").config({
   path: path.join(
@@ -55,14 +59,17 @@ require("dotenv").config({
   ),
 });
 
-const { ADMIN_PRIVATE_KEY, BESU_NODE1 } = process.env;
+const { TEST_PRIVATE_KEY, TEST_NODE1 } = process.env;
 const PrivateKeyProvider = require("@truffle/hdwallet-provider");
 
-console.log(BESU_NODE1);
+const privateKey = TEST_PRIVATE_KEY;
+const Node = TEST_NODE1;
+
+console.log(Node);
+console.log(privateKey);
 // const logger = require("./config/logger");
 
-const privateKey = ADMIN_PRIVATE_KEY;
-const privateKeyProvider = new PrivateKeyProvider(privateKey, BESU_NODE1);
+const privateKeyProvider = new PrivateKeyProvider(privateKey, Node);
 
 module.exports = {
   /**
@@ -84,19 +91,15 @@ module.exports = {
     //
     development: {
       provider: privateKeyProvider,
+      host: "127.0.0.1",
+      port: "7545",
       network_id: "*",
       gasPrice: 0,
-    },
-    /*    development_1: {
-      host: "172.30.1.156", // Localhost (default: none)
-      port: 8545, // Standard Ethereum port (default: none)
-      network_id: "202110211754", // Any network (default: none)
-      from: "0x0000000000000000000000000000000000000001",
-      /!* provider:  privateKeyProvider,
-      network_id: "202110211754",
-      gasPrice: 0 *!/
-      // gas: "0x1ffffffffffffe"
-    }, */
+    }, // Localhost (default: none)
+    //  host: "localhost"
+    //  port: 8545,            // Standard Ethereum port (default: none)
+    //  network_id: "*",       // Any network (default: none)
+    // },
     //
     // An additional network, but with some advanced options…
     // advanced: {
@@ -121,7 +124,7 @@ module.exports = {
     // Useful for private networks
     // private: {
     //   provider: () => new HDWalletProvider(MNEMONIC, `https://network.io`),
-    //   network_id: 8085,   // This network is yours, in the cloud.
+    //   network_id: 2111,   // This network is yours, in the cloud.
     //   production: true    // Treats this network as if it was a public net. (default: false)
     // }
   },
@@ -134,9 +137,9 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.8.1", // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.8.17", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      // settings: {          // See thDGe solidity docs for advice about optimization and evmVersion
+      // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
       //    enabled: false,
       //    runs: 200

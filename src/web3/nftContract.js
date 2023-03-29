@@ -4,45 +4,123 @@ const Contract = require("web3-eth-contract");
 const PrivateKeyProvider = require("@truffle/hdwallet-provider");
 const { timestampToTimezoneDatetime } = require("../utils/time-utils");
 const truffleConfig = require("../../truffle-config");
-const NFT = require("../../build/contracts/DGNFT.json");
+const SBTUserJson = require("../../build/contracts/SBTUser.json");
+const SBTAdminJson = require("../../build/contracts/SBTAdmin.json");
 
-const { TEST_ADDRESS, TEST_CONTRACT_ADDRESS, TEST_NODE1 } = process.env;
+const {
+  TEST_ADDRESS,
+  TEST_USER_CONTRACT_ADDRESS,
+  TEST_ADMIN_CONTRACT_ADDRESS,
+  TEST_NODE1,
+} = process.env;
+
 const ADMIN_ADDRESS = TEST_ADDRESS;
-const CONTRACT_ADDRESS = TEST_CONTRACT_ADDRESS;
-const NODE1 = TEST_NODE1;
-const nftMetaData = require("./nft-metadata.json");
 
 const web3 = new Web3(truffleConfig.networks.development.provider);
 
-const adminContract = () => {
+const SBTAdminContract = () => {
   Contract.setProvider(truffleConfig.networks.development.provider);
-  return new Contract(NFT.abi, CONTRACT_ADDRESS);
-};
-const userContract = (privateKey) => {
-  const privateKeyProvider = new PrivateKeyProvider(privateKey, NODE1);
-  Contract.setProvider(privateKeyProvider);
-  return new Contract(NFT.abi, CONTRACT_ADDRESS);
+  return new Contract(SBTAdminJson.abi, TEST_ADMIN_CONTRACT_ADDRESS);
 };
 
-module.exports.mintToken = async (toAddress, metaData) => {
-  const mintNftContract = adminContract();
-  return await mintNftContract.methods
-      .mintToken(toAddress, metaData)
+const SBTUserContract = () => {
+  Contract.setProvider(truffleConfig.networks.development.provider);
+  return new Contract(SBTUserJson.abi, TEST_USER_CONTRACT_ADDRESS);
+};
+
+module.exports.admin_Mint = async (tokenOwner, to, tokenId) => {
+  const SBTContract = SBTAdminContract();
+  try {
+    const value = SBTContract.methods.mintSBT(tokenOwner, to, tokenId);
+
+    value
       .send({ from: ADMIN_ADDRESS })
       .then((data) => {
         return Promise.resolve(data);
       })
-      .catch((err) => Promise.reject(err));
+      .catch((err) => {
+        Promise.reject(err);
+      });
+  } catch (err) {
+    console.log(err);
+  }
+
+  /*
+  return await SBTContract.methods
+    .mintSBT(tokenOwner, to, tokenId)
+    . */
 };
-module.exports.mintNFTWithMQ = async (param, channel, msg) => {
-  const mintNftContract = adminContract();
-  const toAddress = param.address;
-  // if (channel && msg) await channel.ack(msg);
-  return await mintNftContract.methods
-    .mintNFT(toAddress, JSON.stringify({ ...nftMetaData, image: param.image }))
+
+module.exports.admin_Burn = async (tokenOwner, to, tokenId) => {
+  const SBTContract = SBTAdminContract();
+
+  return await SBTContract.methods
+    .burnSBT(tokenOwner, to, tokenId)
     .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      Promise.reject(err);
+    });
+};
+
+module.exports.admin_createToken = async (tokenOwner) => {
+  const SBTContract = SBTAdminContract();
+
+  console.log(tokenOwner);
+
+  return await SBTContract.methods
+    .createToken(tokenOwner)
+    .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      console.log(data);
+      return Promise.resolve(data);
+    })
     .catch((err) => {
       return Promise.reject(err);
+    });
+};
+
+module.exports.user_Mint = async (tokenOwner, to, tokenId) => {
+  const SBTContract = SBTUserContract();
+
+  return await SBTContract.methods
+    .mintSBT(tokenOwner, to, tokenId)
+    .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
+};
+
+module.exports.user_Burn = async (to, tokenId) => {
+  const SBTContract = SBTUserContract();
+
+  return await SBTContract.methods
+    .burnSBT(to, tokenId)
+    .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
+};
+
+module.exports.user_createToken = async (tokenOwner) => {
+  const SBTContract = SBTUserContract();
+
+  return await SBTContract.methods
+    .createToken(tokenOwner)
+    .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      Promise.reject(err);
     });
 };
 
@@ -89,61 +167,6 @@ module.exports.getTransactionInfo = async (transactionHash) => {
   };
 };
 
-module.exports.getTokens = async (address) => {
-  const mintNftContract = adminContract();
-  return await mintNftContract.methods
-      .getTokens(address)
-      .call()
-      .then((data) => {
-        return Promise.resolve(data);
-      })
-      .catch((err) => Promise.reject(err));
-};
-
-module.exports.transferNft = async (
-  ownerPrivateKey,
-  ownerAddress,
-  buyAddress,
-  tokenId
-) => {
-  const transferNftContract = userContract(ownerPrivateKey);
-  return await transferNftContract.methods
-    .safeTransferFrom(ownerAddress, buyAddress, tokenId)
-    .send({ from: ownerAddress })
-    .then((data) => Promise.resolve(data))
-    .catch((error) => {
-      return Promise.reject(error);
-    });
-};
-
-module.exports.getNFTBalance = async (param) => {
-  const mintNftContract = adminContract();
-  return await mintNftContract.methods
-    .balanceOf(param.userAddress)
-    .call()
-    .then((data) => Promise.resolve({ balance: parseInt(data, 10) }))
-    .catch((err) => Promise.reject(err));
-};
-
-module.exports.getNFT = async (tokenId) => {
-  const mintNftContract = adminContract();
-  return await mintNftContract.methods
-    .tokenURI(tokenId)
-    .call()
-    .then((data) => Promise.resolve(data))
-    .catch((err) => Promise.reject(err));
-};
-
-module.exports.getOwnerOf = async (tokenId) => {
-  const mintNftContract = adminContract();
-  const owner = await mintNftContract.methods
-    .ownerOf(tokenId)
-    .call()
-    .then((data) => Promise.resolve(data))
-    .catch((err) => Promise.reject(err));
-  return { owner };
-};
-
 module.exports.createAccount = async () => {
   return new Promise((resolve, reject) => {
     try {
@@ -153,116 +176,3 @@ module.exports.createAccount = async () => {
     }
   });
 };
-
-module.exports.hexToAscii = async (string) => {
-  try {
-    await web3.eth
-      .getPastLogs({
-        fromBlock: "0x0",
-        address: ERC721_CONTRACT_ADDRESS,
-      })
-      .then((res) => {
-        // res.forEach((item) => web3.eth.abi.decodeLog(,item.topics));
-      })
-      .catch((err) => console.log("err", err));
-  } catch (e) {
-    console.log(e);
-  }
-  return web3.utils.hexToAscii(string);
-};
-
-/* module.exports.mintNFTV2 = async (toAddress, tokenURI) => {
-  return new Promise((resolve, reject) => {
-    const toAddress = "0xF62fb6300B34a59a1b81a8F36F8fb07E043ADc68";
-    nftContract.methods
-      .mintNFT(toAddress, { ...nftMetaData, image: param.image })
-      .send({ from: ADMIN_ADDRESS })
-      .on("confirmation", function (confirmationNumber, receipt) {
-        if (confirmationNumber === 0) {
-          web3.eth
-            .getTransactionReceipt(receipt.transactionHash)
-            .then((data) => {
-              const tokenIds = web3.utils.hexToNumber(data.logs[0].topics[3]);
-              /!* const toAddress =
-                param.address || web3.eth.accounts.create().address; *!/
-              nftContract.methods
-                .safeTransferFrom(ADMIN_ADDRESS, toAddress, tokenIds)
-                .send({ from: ADMIN_ADDRESS })
-                .on(
-                  "confirmation",
-                  function (transferConfirmationNumber, transferReceipt) {
-                    if (transferConfirmationNumber === 0) {
-                      logger.debug(toAddress);
-                      resolve({ ...transferReceipt, toAddress });
-                    }
-                  }
-                )
-                .on("error", function (error) {
-                  reject(error);
-                })
-                .catch((err) => {
-                  logger.error(err);
-                  reject(err);
-                });
-            })
-            .catch((err) => {
-              logger.error(err);
-              reject(err);
-            });
-        }
-      })
-      .on("error", function (error) {
-        logger.error(error);
-        reject(error);
-      })
-      .catch((err) => {
-        logger.error(err);
-        reject(err);
-      });
-  });
-};
-module.exports.getOwnerOf = async (tokenId) => {
-  const mintNftContract = adminContract();
-  const owner = await mintNftContract.methods
-    .ownerOf(tokenId)
-    .call()
-    .then((data) => {
-      console.log(data);
-      return data;
-    });
-  return { owner };
-};
-
-module.exports.approve = async (
-  privateKey,
-  fromAddress,
-  toAddress,
-  tokenId
-) => {
-  const transferNftContract = userContract(privateKey);
-  const owner = await transferNftContract.methods
-    .approve(fromAddress, tokenId)
-    .send({ from: fromAddress })
-    .then((data) => {
-      console.log(data);
-      return data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  return { owner };
-};
-
-module.exports.getApproved = async (tokenId) => {
-  const transferNftContract = adminContract();
-  const owner = await transferNftContract.methods
-    .getApproved(tokenId)
-    .call()
-    .then((data) => {
-      console.log(data);
-      return data;
-    });
-  return { owner };
-};
-
-*/
