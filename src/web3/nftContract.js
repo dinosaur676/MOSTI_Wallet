@@ -8,47 +8,34 @@ const SBTUserJson = require("../../build/contracts/SBTUser.json");
 const SBTAdminJson = require("../../build/contracts/SBTAdmin.json");
 
 const {
-  TEST_ADDRESS,
-  TEST_USER_CONTRACT_ADDRESS,
-  TEST_ADMIN_CONTRACT_ADDRESS,
+  ADMIN_ADDRESS,
+  USER_CONTRACT_ADDRESS,
+  ADMIN_CONTRACT_ADDRESS,
   TEST_NODE1,
 } = process.env;
-
-const ADMIN_ADDRESS = TEST_ADDRESS;
 
 const web3 = new Web3(truffleConfig.networks.development.provider);
 
 const SBTAdminContract = () => {
   Contract.setProvider(truffleConfig.networks.development.provider);
-  return new Contract(SBTAdminJson.abi, TEST_ADMIN_CONTRACT_ADDRESS);
+  return new Contract(SBTAdminJson.abi, ADMIN_CONTRACT_ADDRESS);
 };
 
 const SBTUserContract = () => {
   Contract.setProvider(truffleConfig.networks.development.provider);
-  return new Contract(SBTUserJson.abi, TEST_USER_CONTRACT_ADDRESS);
+  return new Contract(SBTUserJson.abi, USER_CONTRACT_ADDRESS);
 };
 
 module.exports.admin_Mint = async (tokenOwner, to, tokenId) => {
   const SBTContract = SBTAdminContract();
-  try {
-    const value = SBTContract.methods.mintSBT(tokenOwner, to, tokenId);
 
-    value
-      .send({ from: ADMIN_ADDRESS })
-      .then((data) => {
-        return Promise.resolve(data);
-      })
-      .catch((err) => {
-        Promise.reject(err);
-      });
-  } catch (err) {
-    console.log(err);
-  }
-
-  /*
   return await SBTContract.methods
     .mintSBT(tokenOwner, to, tokenId)
-    . */
+    .send({ from: ADMIN_ADDRESS })
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => Promise.reject(err));
 };
 
 module.exports.admin_Burn = async (tokenOwner, to, tokenId) => {
@@ -61,20 +48,17 @@ module.exports.admin_Burn = async (tokenOwner, to, tokenId) => {
       return Promise.resolve(data);
     })
     .catch((err) => {
-      Promise.reject(err);
+      return Promise.reject(err);
     });
 };
 
 module.exports.admin_createToken = async (tokenOwner) => {
   const SBTContract = SBTAdminContract();
 
-  console.log(tokenOwner);
-
   return await SBTContract.methods
     .createToken(tokenOwner)
     .send({ from: ADMIN_ADDRESS })
     .then((data) => {
-      console.log(data);
       return Promise.resolve(data);
     })
     .catch((err) => {
@@ -120,7 +104,7 @@ module.exports.user_createToken = async (tokenOwner) => {
       return Promise.resolve(data);
     })
     .catch((err) => {
-      Promise.reject(err);
+      return Promise.reject(err);
     });
 };
 

@@ -4,10 +4,6 @@ const express = require("express");
 const router = express.Router();
 const resUtil = require("./resConvertUtil.js");
 const nftService = require("../services/nft-service");
-const nftValidate = require("./validate/nft-validate");
-
-const { TEST_ADDRESS, TEST_PRAIVATE_KEY, ADMIN_ADDRESS } = process.env;
-const nftContract = require("../web3/nftContract");
 
 router.post("/admin-create-token", async (req, res, next) => {
   nftService
@@ -44,6 +40,7 @@ router.post("/admin-mint-token", async (req, res, next) => {
       res.json(resUtil.convertRes(data));
     })
     .catch((err) => {
+      // res.json(resUtil.convertRes(err.message, "오류가 발생하였습니다."));
       next(err);
     });
 });

@@ -9,13 +9,9 @@ const nftService = {
   },
 
   admin_mintToken: async (mintDTO) => {
-    const data = await nftContract.admin_Mint(
-      mintDTO.tokenOwner,
-      mintDTO.to,
-      mintDTO.tokenId
-    );
-
-    if (data === undefined) return { Error: "Required" };
+    const data = await nftContract
+      .admin_Mint(mintDTO.tokenOwner, mintDTO.to, mintDTO.tokenId)
+      .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: mintDTO.tokenOwner,
@@ -25,23 +21,21 @@ const nftService = {
   },
 
   admin_burnToken: async (burnDTO) => {
-    const data = await nftContract.admin_Burn(
-      burnDTO.tokenOwner,
-      burnDTO.to,
-      burnDTO.tokenId
-    );
+    const data = await nftContract
+      .admin_Burn(burnDTO.tokenOwner, burnDTO.to, burnDTO.tokenId)
+      .catch((err) => Promise.reject(err));
 
-    if (data === undefined) return { Error: "Required" };
-
-    return {
+    return Promise.resolve({
       tokenOwner: burnDTO.tokenOwner,
       to: data.to,
       tokenId: data.events.Burn.returnValues.tokenId,
-    };
+    });
   },
 
   admin_createToken: async (address) => {
-    const data = await nftContract.admin_createToken(address);
+    const data = await nftContract
+      .admin_createToken(address)
+      .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: data.to,
@@ -50,11 +44,9 @@ const nftService = {
   },
 
   user_mintToken: async (mintSoulDTO) => {
-    const data = await nftContract.user_Mint(
-      mintSoulDTO.tokenOwner,
-      mintSoulDTO.to,
-      mintSoulDTO.tokenId
-    );
+    const data = await nftContract
+      .user_Mint(mintSoulDTO.tokenOwner, mintSoulDTO.to, mintSoulDTO.tokenId)
+      .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: mintSoulDTO.tokenOwner,
@@ -64,7 +56,9 @@ const nftService = {
   },
 
   user_burnToken: async (burnDTO) => {
-    const data = await nftContract.user_Burn(burnDTO.to, burnDTO.tokenId);
+    const data = await nftContract
+      .user_Burn(burnDTO.to, burnDTO.tokenId)
+      .catch((err) => Promise.reject(err));
 
     return {
       to: data.to,
@@ -73,7 +67,9 @@ const nftService = {
   },
 
   user_createToken: async (address) => {
-    const data = await nftContract.user_createToken(address);
+    const data = await nftContract
+      .user_createToken(address)
+      .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: data.to,

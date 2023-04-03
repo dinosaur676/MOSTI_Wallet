@@ -88,7 +88,7 @@ module.exports = {
     // You should run a client (like ganache, geth, or parity) in a separate terminal
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
-    ////
+    //
     development: {
       provider: privateKeyProvider,
       network_id: "*",
