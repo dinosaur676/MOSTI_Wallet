@@ -32,14 +32,18 @@ const nftService = {
     });
   },
 
-  admin_createToken: async (address) => {
+  admin_createToken: async (dto) => {
+    console.log(dto.tokenOwner);
+    console.log(JSON.stringify(dto.data));
+
     const data = await nftContract
-      .admin_createToken(address)
+      .admin_createToken(dto.tokenOwner, JSON.stringify(dto.data))
       .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: data.to,
       tokenId: data.events.CreateToken.returnValues.tokenId,
+      metaData: data.events.CreateToken.returnValues.tokenURI,
     };
   },
 
@@ -66,14 +70,15 @@ const nftService = {
     };
   },
 
-  user_createToken: async (address) => {
+  user_createToken: async (dto) => {
     const data = await nftContract
-      .user_createToken(address)
+      .user_createToken(dto.tokenOwner, JSON.stringify(dto.data))
       .catch((err) => Promise.reject(err));
 
     return {
       tokenOwner: data.to,
       tokenId: data.events.CreateToken.returnValues.tokenId,
+      metaData: data.events.CreateToken.returnValues.tokenURI,
     };
   },
 

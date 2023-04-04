@@ -52,11 +52,11 @@ module.exports.admin_Burn = async (tokenOwner, to, tokenId) => {
     });
 };
 
-module.exports.admin_createToken = async (tokenOwner) => {
+module.exports.admin_createToken = async (tokenOwner, tokenURI) => {
   const SBTContract = SBTAdminContract();
 
   return await SBTContract.methods
-    .createToken(tokenOwner)
+    .createToken(tokenOwner, tokenURI)
     .send({ from: ADMIN_ADDRESS })
     .then((data) => {
       return Promise.resolve(data);
@@ -94,11 +94,11 @@ module.exports.user_Burn = async (to, tokenId) => {
     });
 };
 
-module.exports.user_createToken = async (tokenOwner) => {
+module.exports.user_createToken = async (tokenOwner, tokenURI) => {
   const SBTContract = SBTUserContract();
 
   return await SBTContract.methods
-    .createToken(tokenOwner)
+    .createToken(tokenOwner, tokenURI)
     .send({ from: ADMIN_ADDRESS })
     .then((data) => {
       return Promise.resolve(data);

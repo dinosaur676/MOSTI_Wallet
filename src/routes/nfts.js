@@ -6,8 +6,12 @@ const resUtil = require("./resConvertUtil.js");
 const nftService = require("../services/nft-service");
 
 router.post("/admin-create-token", async (req, res, next) => {
+  const dto = req.body;
+
+  console.log(dto);
+
   nftService
-    .admin_createToken(req.body.tokenOwner)
+    .admin_createToken(dto)
     .then((data) => {
       console.log(data);
       res.json(resUtil.convertRes(data));
@@ -46,8 +50,10 @@ router.post("/admin-mint-token", async (req, res, next) => {
 });
 
 router.post("/user-create-token", async (req, res, next) => {
+  const dto = req.body;
+
   nftService
-    .user_createToken(req.body.tokenOwner)
+    .user_createToken(dto)
     .then((data) => {
       console.log(data);
       res.json(resUtil.convertRes(data));

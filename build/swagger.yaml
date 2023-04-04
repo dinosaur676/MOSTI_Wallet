@@ -43,6 +43,10 @@ paths:
                   type: string
                   example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
                   description: 생성한 토큰의 주인
+                data:
+                  type: string
+                  example: '123412341234'
+                  description: metaData
       responses:
         '200':
           description: successful operation
@@ -105,6 +109,10 @@ paths:
                   type: string
                   example: '0x16a4C4B2D3839b015a294C9785665200025228AC'
                   description: 생성한 토큰의 주인
+                data:
+                  type: string
+                  example: '123412341234'
+                  description: metaData
       responses:
         '200':
           description: successful operation
@@ -254,6 +262,10 @@ components:
           type: string
           example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
           description: 토큰의 주인
+        metaData:
+          type: string
+          example: '123412341234'
+          description: 메타데이터
 
     AccountsResponse:
       type: object
