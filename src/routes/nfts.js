@@ -8,8 +8,6 @@ const nftService = require("../services/nft-service");
 router.post("/admin-create-token", async (req, res, next) => {
   const dto = req.body;
 
-  console.log(dto);
-
   nftService
     .admin_createToken(dto)
     .then((data) => {

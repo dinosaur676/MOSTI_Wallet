@@ -27,7 +27,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountsResponse'
-  /nfts/admin-create-token:
+  /sbts/admin-create-token:
     post:
       tags:
         - admin
@@ -54,7 +54,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
-  /nfts/admin-mint-token:
+  /sbts/admin-mint-token:
     post:
       tags:
         - admin
@@ -73,7 +73,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-  /nfts/admin-burn-token:
+  /sbts/admin-burn-token:
     post:
       tags:
         - admin
@@ -93,7 +93,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Response'
 
-  /nfts/user-create-token:
+  /sbts/user-create-token:
     post:
       tags:
         - user
@@ -120,7 +120,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
-  /nfts/user-mint-token:
+  /sbts/user-mint-token:
     post:
       tags:
         - user
@@ -139,7 +139,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-  /nfts/user-burn-token:
+  /sbts/user-burn-token:
     post:
       tags:
         - user

@@ -33,9 +33,6 @@ const nftService = {
   },
 
   admin_createToken: async (dto) => {
-    console.log(dto.tokenOwner);
-    console.log(JSON.stringify(dto.data));
-
     const data = await nftContract
       .admin_createToken(dto.tokenOwner, JSON.stringify(dto.data))
       .catch((err) => Promise.reject(err));

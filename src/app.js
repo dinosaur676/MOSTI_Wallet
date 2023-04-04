@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/v1", router);
 router.use("/", indexRouter);
 router.use("/accounts", accountsRouter);
-router.use("/nfts", nftsRouter);
+router.use("/sbts", nftsRouter);
 
 // listenForMessagesMintNFT("ERC721");
 
