@@ -26,6 +26,20 @@ const SBTUserContract = () => {
   return new Contract(SBTUserJson.abi, USER_CONTRACT_ADDRESS);
 };
 
+module.exports.admin_balance = async (to, tokenId) => {
+  const SBTContract = SBTAdminContract();
+
+  return await SBTContract.methods
+    .balanceOf(to, tokenId)
+    .call()
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      Promise.reject(err);
+    });
+};
+
 module.exports.admin_Mint = async (tokenOwner, to, tokenId) => {
   const SBTContract = SBTAdminContract();
 

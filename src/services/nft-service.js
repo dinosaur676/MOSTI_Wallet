@@ -8,6 +8,16 @@ const nftService = {
     return account;
   },
 
+  admin_balance: async (balanceDTO) => {
+    const data = await nftContract
+      .admin_balance(balanceDTO.to, balanceDTO.tokenId)
+      .catch((err) => Promise.reject(err));
+
+    return {
+      balance: data,
+    };
+  },
+
   admin_mintToken: async (mintDTO) => {
     const data = await nftContract
       .admin_Mint(mintDTO.tokenOwner, mintDTO.to, mintDTO.tokenId)
@@ -15,7 +25,7 @@ const nftService = {
 
     return {
       tokenOwner: mintDTO.tokenOwner,
-      to: data.to,
+      to: mintDTO.to,
       tokenId: data.events.Mint.returnValues.tokenId,
     };
   },
@@ -27,7 +37,7 @@ const nftService = {
 
     return Promise.resolve({
       tokenOwner: burnDTO.tokenOwner,
-      to: data.to,
+      to: burnDTO.to,
       tokenId: data.events.Burn.returnValues.tokenId,
     });
   },
@@ -38,7 +48,7 @@ const nftService = {
       .catch((err) => Promise.reject(err));
 
     return {
-      tokenOwner: data.to,
+      tokenOwner: dto.tokenOwner,
       tokenId: data.events.CreateToken.returnValues.tokenId,
       metaData: data.events.CreateToken.returnValues.tokenURI,
     };
@@ -51,7 +61,7 @@ const nftService = {
 
     return {
       tokenOwner: mintSoulDTO.tokenOwner,
-      to: data.to,
+      to: mintSoulDTO.to,
       tokenId: data.events.Mint.returnValues.tokenId,
     };
   },
@@ -62,7 +72,7 @@ const nftService = {
       .catch((err) => Promise.reject(err));
 
     return {
-      to: data.to,
+      to: burnDTO.to,
       tokenId: data.events.Burn.returnValues.tokenId,
     };
   },

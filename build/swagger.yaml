@@ -27,6 +27,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountsResponse'
+  /sbts/admin-balance:
+    post:
+      tags:
+        - admin
+      summary: 토큰 소유 확인
+      description: 토큰을 생성후 tokenID와 Owner를 반환한다.
+      operationId: adminCreateToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                to:
+                  type: string
+                  example: '0xF0b0c34E1EB0c2Af4AD4f91fC4314a3eeE97e4Df'
+                  description: 생성한 토큰의 주인
+                tokenId:
+                  type: integer
+                  example: 0
+                  description: tokenId
   /sbts/admin-create-token:
     post:
       tags:

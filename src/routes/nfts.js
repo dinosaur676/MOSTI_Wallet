@@ -5,13 +5,24 @@ const router = express.Router();
 const resUtil = require("./resConvertUtil.js");
 const nftService = require("../services/nft-service");
 
+router.post("/admin-balance", async (req, res, next) => {
+  const dto = req.body;
+
+  nftService
+    .admin_balance(dto)
+    .then((data) => {
+      res.json(resUtil.convertRes(data));
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 router.post("/admin-create-token", async (req, res, next) => {
   const dto = req.body;
 
   nftService
     .admin_createToken(dto)
     .then((data) => {
-      console.log(data);
       res.json(resUtil.convertRes(data));
     })
     .catch((err) => {

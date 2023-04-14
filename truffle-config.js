@@ -65,8 +65,7 @@ const PrivateKeyProvider = require("@truffle/hdwallet-provider");
 const privateKey = ADMIN_PRIVATE_KEY;
 const Node = BESU_NODE1;
 
-console.log(Node);
-console.log(privateKey);
+console.log(`blockChain Node : ${Node}`);
 // const logger = require("./config/logger");
 
 const privateKeyProvider = new PrivateKeyProvider(privateKey, Node);
