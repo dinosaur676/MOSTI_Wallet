@@ -6,4 +6,3 @@ logs
 src/public/apidoc
 /build/swagger.yaml
 /src/apidoc/nftApiDoc.sample
-/contracts/*
