@@ -26,6 +26,20 @@ const SBTUserContract = () => {
   return new Contract(SBTUserJson.abi, USER_CONTRACT_ADDRESS);
 };
 
+module.exports.admin_ownerOf = async (tokenId) => {
+  const SBTContract = SBTAdminContract();
+
+  return await SBTContract.methods
+    .ownerOf(tokenId)
+    .call()
+    .then((data) => {
+      return Promise.resolve(data);
+    })
+    .catch((err) => {
+      Promise.reject(err);
+    });
+};
+
 module.exports.admin_balance = async (to, tokenId) => {
   const SBTContract = SBTAdminContract();
 
@@ -40,11 +54,11 @@ module.exports.admin_balance = async (to, tokenId) => {
     });
 };
 
-module.exports.admin_Mint = async (tokenOwner, to, tokenId) => {
+module.exports.admin_Mint = async (to, tokenId) => {
   const SBTContract = SBTAdminContract();
 
   return await SBTContract.methods
-    .mintSBT(tokenOwner, to, tokenId)
+    .mintSBT(to, tokenId)
     .send({ from: ADMIN_ADDRESS })
     .then((data) => {
       return Promise.resolve(data);

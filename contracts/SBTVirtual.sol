@@ -46,7 +46,9 @@ contract SBTVirtual is Ownable, ERC1155 {
         emit CreateToken(tokenOwner, tokenId, tokenURI);
     }
 
-
+    function ownerOf(uint256 tokenId) external view returns(address){
+        return tokenOwnerOf[tokenId];
+    }
 
     //Transfer, Batch 막아둠
     modifier IsTransferAllowed(address soulOwner, uint256 tokenId) {

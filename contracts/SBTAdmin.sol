@@ -12,8 +12,7 @@ contract SBTAdmin is SBTVirtual {
     event Mint(address to, uint256 tokenId);
     event Burn(address to, uint256 tokenId);
 
-    function mintSBT(address tokenOwner, address to, uint256 tokenId) external onlyOwner{
-        require(tokenOwnerOf[tokenId] == tokenOwner, "not Owner");
+    function mintSBT(address to, uint256 tokenId) external onlyOwner{
         require(!_locked[tokenId][to], "already has token");
 
         super._mint(to, tokenId, 1, "");

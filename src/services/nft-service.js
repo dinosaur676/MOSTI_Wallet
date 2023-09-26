@@ -8,6 +8,16 @@ const nftService = {
     return account;
   },
 
+  admin_ownerOf: async (tokenId) => {
+    const data = await nftContract
+      .admin_ownerOf(tokenId)
+      .catch((err) => Promise.reject(err));
+
+    return {
+      owner: data,
+    };
+  },
+
   admin_balance: async (balanceDTO) => {
     const data = await nftContract
       .admin_balance(balanceDTO.to, balanceDTO.tokenId)
@@ -20,7 +30,7 @@ const nftService = {
 
   admin_mintToken: async (mintDTO) => {
     const data = await nftContract
-      .admin_Mint(mintDTO.tokenOwner, mintDTO.to, mintDTO.tokenId)
+      .admin_Mint(mintDTO.to, mintDTO.tokenId)
       .catch((err) => Promise.reject(err));
 
     return {
